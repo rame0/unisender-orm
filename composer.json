@@ -1,0 +1,13 @@
+{
+  "name": "rame0/unisender-orm",
+  "description": "ORM library for Unisender API requests ",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "RAMe0",
+      "homepage": "https://github.com/rame0",
+      "email": "r@me0.biz"
+    }
+  ]
+}
