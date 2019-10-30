@@ -2,6 +2,7 @@
   "name": "rame0/unisender-orm",
   "description": "ORM library for Unisender API requests ",
   "minimum-stability": "dev",
+  "homepage": "https://github.com/rame0/unisender-orm",
   "license": "MIT",
   "authors": [
     {
