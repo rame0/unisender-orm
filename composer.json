@@ -1,6 +1,6 @@
 {
   "name": "rame0/unisender-orm",
-  "description": "ORM library for Unisender API requests ",
+  "description": "ORM library for Unisender API",
   "minimum-stability": "dev",
   "homepage": "https://github.com/rame0/unisender-orm",
   "license": "MIT",
@@ -10,5 +10,17 @@
       "homepage": "https://github.com/rame0",
       "email": "r@me0.biz"
     }
-  ]
+  ],
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "suggest": {
+    "ext-bz2": "Allows bzip2 compression"
+  },
+  "autoload": {
+    "psr-4": {
+      "rame0\\UniORM\\": "src/"
+    }
+  }
 }
