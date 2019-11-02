@@ -1,4 +1,8 @@
 # Default ignored files
 /.idea
 /vendor/
-/examples/apikey.php
+/examples/config.php
+/docker-compose.yml
+
+#exclude simlink to global Dockerfile's directory
+docker

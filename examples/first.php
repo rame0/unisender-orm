@@ -13,8 +13,8 @@ use rame0\UniORM\Classes\ContactList;
 use rame0\UniORM\Classes\Exceptions\ORMException;
 use rame0\UniORM\ORM;
 
-require_once '../vendor/autoload.php';
-require_once 'apikey.php';
+require_once 'config.php';
+require_once $root_dir . 'vendor/autoload.php';
 
 try {
     ORM::config($apikey);
@@ -24,9 +24,10 @@ try {
     var_dump(ORM::getRequestErrorLog());
     var_dump($response->getCollection());
 
-    $response->delete(719386, true);
-    var_dump($response->getCollection());
+//    $response->delete(719386, true);
+//    var_dump($response->getCollection());
 } catch (ORMException $ex) {
+    echo $ex->getMessage() . PHP_EOL;
     var_dump(ORM::getRequestWarnLog());
     var_dump(ORM::getRequestErrorLog());
 }

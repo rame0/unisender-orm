@@ -8,12 +8,10 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace rame0\UniORM\Classes\Exceptions;
+namespace rame0\UniORM\Classes;
 
 
-use Exception;
-
-class ORMException extends Exception
+class Contacts extends Base
 {
 
 }
