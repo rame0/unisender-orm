@@ -10,5 +10,6 @@
 
 
 // This is base file for examples.
-// Make copy of it  with name 'apikey.php' and put you api key there
+// Make copy of it  with name 'config.php' and put you api key there
+$root_dir = realpath(dirname(__FILE__) . '/../') . PHP_EOL;
 $apikey = '<your_key_here>';
