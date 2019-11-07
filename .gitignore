@@ -2,7 +2,7 @@
 /.idea
 /vendor/
 /examples/config.php
-/docker-compose.yml
 
-#exclude simlink to global Dockerfile's directory
+#exclude Dockerfile's directory and other container configs
 docker
+/docker/
