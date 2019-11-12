@@ -13,10 +13,10 @@ namespace rame0\UniORM\Classes;
 use rame0\UniORM\Classes\Exceptions\ORMException;
 use rame0\UniORM\ORM;
 
-class ContactList extends Base
+class ContactsList extends Base
 {
-    public $id = 0;
-    public $title = '';
+    private $id = 0;
+    private $title = '';
     private $before_subscribe_url = '';
     private $after_subscribe_url = '';
 
@@ -34,14 +34,15 @@ class ContactList extends Base
         } elseif (empty($title)) {
             throw new ORMException('Title is empty.');
         } else {
-            $this->title = $title;
+            $this->title = (string)$title;
         }
     }
 
     /**
      * Get available campaign lists
-     * @return ContactList[]|Collection
+     * @return ContactsList[]|Collection
      * @throws ORMException
+     * @throws RequestException
      */
     public static function get(): Collection
     {
@@ -56,6 +57,39 @@ class ContactList extends Base
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->isNew;
+    }
+
+    /**
+     * (!!)This value can only be set. It's not available when retrieving lists from server.
      * @return string
      */
     public function getAfterSubscribeUrl(): string
@@ -72,6 +106,7 @@ class ContactList extends Base
     }
 
     /**
+     * (!!)This value can only be set. It's not available when retrieving lists from server.
      * @return string
      */
     public function getBeforeSubscribeUrl(): string
@@ -89,45 +124,31 @@ class ContactList extends Base
 
     /**
      * Save list
-     * @return ContactList
+     * @return ContactsList
      * @throws ORMException
+     * @throws RequestException
      */
     public function save(): self
     {
-        $params = [
-            'title' => $this->title
-        ];
-
-        if (!empty($this->after_subscribe_url)) {
-            $params['after_subscribe_url'] = $this->after_subscribe_url;
-        }
-        if (!empty($this->before_subscribe_url)) {
-            $params['before_subscribe_url'] = $this->before_subscribe_url;
-        }
-
         if ($this->isNew) {
-            $result = ORM::getInstance()->createList($params);
-            if (!empty($result) && !empty($result['id'])) {
-                $this->id = (int)$result['id'];
-            } else {
-                throw new ORMException('List creation failed');
-            }
+            $this->id = ORM::getInstance()->createList($this->title, $this->before_subscribe_url, $this->after_subscribe_url);
+            $this->isNew = false;
         } else {
-            $params['list_id'] = $this->id;
-            ORM::getInstance()->updateList($params);
-            $this->checkLogsAndThrow();
+            ORM::getInstance()->updateList($this->id, $this->title, $this->before_subscribe_url, $this->after_subscribe_url);
         }
+
+        $this->checkLogsAndThrow();
         return $this;
     }
 
     /**
      * @return bool
      * @throws ORMException
+     * @throws RequestException
      */
     public function delete(): bool
     {
-        $params['list_id'] = $this->id;
-        ORM::getInstance()->deleteList($params);
+        ORM::getInstance()->deleteList($this->id);
 
         $this->checkLogsAndThrow();
 
