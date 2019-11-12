@@ -9,7 +9,7 @@
  */
 
 
-use rame0\UniORM\Classes\ContactList;
+use rame0\UniORM\Classes\ContactsList;
 use rame0\UniORM\Classes\Exceptions\ORMException;
 use rame0\UniORM\ORM;
 
@@ -20,13 +20,34 @@ try {
     ORM::config($apikey);
     $inst = ORM::getInstance();
 
-    $response = ContactList::get();
-    var_dump(ORM::getRequestErrorLog());
+    // Get Initial lists
+//    $response = ContactsList::get();
+//    var_dump($response->getCollection());
+
+    // Add new list
+    $newList = new ContactsList('MyNewTestList');
+    $newList->save();
+
+    // Get lists with created list
+    $response = ContactsList::get();
     var_dump($response->getCollection());
 
-//    $response->delete(719386, true);
-//    var_dump($response->getCollection());
-} catch (ORMException $ex) {
+    // Update list
+    $newList->setTitle('MyNewTestList-changed');
+    $newList->save();
+
+    // Get lists with updated list
+    $response = ContactsList::get();
+    var_dump($response->getCollection());
+
+    // Delete list
+    $newList->delete();
+
+    // Check that list was deleted
+    $response = ContactsList::get();
+    var_dump($response->getCollection());
+
+} catch (Throwable $ex) {
     echo $ex->getMessage() . PHP_EOL;
     var_dump(ORM::getRequestWarnLog());
     var_dump(ORM::getRequestErrorLog());
