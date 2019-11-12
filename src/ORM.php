@@ -9,23 +9,16 @@
  */
 
 
-// TODO For now it works like original API. Next step -
-//  magic method __call() should accept normal params instead of array for all.
-//  Maybe it worth write separate methods instead using __call()
-
 namespace rame0\UniORM;
 
 
+use rame0\UniORM\Classes\Exceptions\ORMException;
 use rame0\UniORM\Classes\RequestException;
 
 /**
  * Class ORM
  * @package rame0\UniORM
  *
- * @method object getLists() It is a method to get the list of all available campaign lists.
- * @method object createList(array $params) It is a method to create a new contact list.
- * @method object updateList(array $params) It is a method to change campaign list properties.
- * @method object deleteList(array $params) It is a method to delete a list.
  * @method object exclude(array $params) The method excludes the contact’s email or phone number from one or several lists.
  * @method object unsubscribe(array $params) The method unsubscribes the contact email or phone number from one or several
  * lists.
@@ -172,15 +165,87 @@ class ORM
     }
 
     /**
+     * It is a method to get the list of all available campaign lists.
+     * @return array|null
+     * @throws RequestException
+     */
+    public function getLists(): ?array
+    {
+        return $this->makeRequest('getLists');
+    }
+
+    /**
+     * It is a method to create a new contact list.
+     * @param string $title
+     * @param string $before_subscribe_url
+     * @param string $after_subscribe_url
+     * @return int
+     * @throws ORMException
+     * @throws RequestException
+     */
+    public function createList(string $title, string $before_subscribe_url = null, string $after_subscribe_url = null): int
+    {
+        if (empty($title)) throw new ORMException('Title have to be set');
+
+        $params = array_filter(compact('title', 'before_subscribe_url', 'after_subscribe_url'));
+
+        $result = $this->makeRequest("createList", $params);
+
+        if (!empty($result) && !empty($result['id'])) {
+            return (int)$result['id'];
+        } else {
+            throw new ORMException('List creation failed');
+        }
+    }
+
+    /**
+     * It is a method to change campaign list properties.
+     * @param int $list_id
+     * @param string $title
+     * @param string $before_subscribe_url
+     * @param string $after_subscribe_url
+     * @return bool
+     * @throws ORMException
+     * @throws RequestException
+     */
+    public function updateList(int $list_id, string $title, string $before_subscribe_url = null, string $after_subscribe_url = null): bool
+    {
+        if ($list_id < 1) throw new ORMException('ID of list have to be set');
+        if (empty($title)) throw new ORMException('Title have to be set');
+
+        $params = array_filter(compact('list_id', 'title', 'before_subscribe_url', 'after_subscribe_url'));
+
+        $this->makeRequest('updateList', $params);
+
+        return true;
+    }
+
+    /**
+     * It is a method to delete a list.
+     * @param int $list_id
+     * @return bool
+     * @throws ORMException
+     * @throws RequestException
+     */
+    public function deleteList(int $list_id): bool
+    {
+        if ($list_id < 1) throw new ORMException('ID of list have to be set');
+
+        $params = ['list_id' => $list_id];
+        $this->makeRequest('deleteList', $params);
+        return true;
+    }
+
+
+    /**
      * @param string $methodName
      * @param array $params
      *
      * @return array|null Returns response result data of NULL otherwise
      * @throws RequestException if you set ORM to throw
      */
-    public function __call(string $methodName, array $params = []): ?array
+    private function makeRequest(string $methodName, array $params = []): ?array
     {
-        $params = count($params) > 0 ? $params[0] : [];
         if (self::$platform !== '') {
             $params['platform'] = self::$platform;
         }
